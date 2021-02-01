@@ -26,6 +26,24 @@ mvn spring-boot:run
 docker run -p 8080:8080 --name chaos-demo chaos-demo:0.0.1-SNAPSHOT
 ```
 
+#### Publish the docker image on a public repo
+You will need to publish the docker image on a public repo (like hub.docker.com) if you want k8s to pull the image and deploy it in a cluster.
+
+```shell
+# 1. Login to remote docker repo
+docker login
+
+# 2. Tag the image
+docker tag chaos-demo:0.0.1-SNAPSHOT namahesh/chaos-demo
+
+# 3. Push to remote repo
+docker push namahesh/chaos-demo
+```
+
+If you have created and pushed your own docker image, update the image in [deployment.yaml](deployment.yaml).
+
+_Alternately, you can use the docker image I have uploaded already to my public repo on hub.docker.com_ - [`namahesh/chaos-demo:latest`](https://hub.docker.com/repository/docker/namahesh/chaos-demo)
+
 #### Deploy in K8S
 ```shell
 # 1. Create a deployment
