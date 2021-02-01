@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: chaos-demo
+  name: chaos-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chaos-demo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: chaos-demo
+    spec:
+      containers:
+      - image: namahesh/chaos-demo:latest
+        name: chaos-demo
+        ports:
+          - containerPort: 8080
+        resources: {}
+        imagePullPolicy: Always
+
