@@ -4,6 +4,22 @@
 ## Overview
 Simple ChaosToolkit experiment that uses the [`chaostoolkit-kubernetes`](https://github.com/chaostoolkit/chaostoolkit-kubernetes) extension to terminate PODs and validate service availability.
 
+This experiment does the following:
+
+- **STEP 1:** Inject a constant-rate HTTP API request traffic into [chaos-demo](../../chaos-demo/README.md) service throughout the duration of the experiment
+
+- **STEP 2:** Establish the following [steady-state-hypothesis](https://docs.chaostoolkit.org/reference/concepts/#steady-state-hypothesis):
+  - service is UP and RUNNING, and reports a 'healthy' status
+  - all traffic is being served successfully -- there are no errors
+
+- **STEP 3:** Then, using the [`chaostoolkit-kubernetes`](https://github.com/chaostoolkit/chaostoolkit-kubernetes) extension, a single random POD is terminated abruptly. (This should make K8S spin up another POD to keep the replica set intact as per spec.)
+
+- **STEP 4:** The experiment waits for some time, lets the constant-rate HTTP API request traffic continue to hit the service.
+
+- **STEP 5:** The traffic metrics are gathered and transformed to be analyzed.
+
+- **STEP 6:** Finally, the steady-state-hypothesis (described above) is validated again. **It must pass**. Else, the experiment is considered a failure because it has affected service availability.
+
 ## Pre-Requisites
 [Vegeta](https://github.com/tsenart/vegeta) is a CLI based HTTP performance testing tool, (much like [_apacheBench `(ab)`_](https://httpd.apache.org/docs/2.4/programs/ab.html) but better). This is used to inject constant rate load for a specific duration through the experiment.
 
