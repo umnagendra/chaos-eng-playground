@@ -27,8 +27,6 @@ def validate_traffic_report(reportFile: str) -> bool:
     with open(reportFile) as f:
         for line in f:
             error = json.loads(line).get("error")
-            #error = json.loads(b64decode(json.loads(line).get("error")))
-            #error = record.get("error")
             if error:
                 logging.error("Found error(s) in the traffic report. This indicates that one/more requests actually failed during the experiment.\nThe service is *NOT* highly available. This experiment will fail.")
                 logging.error(error)
