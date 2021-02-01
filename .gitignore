@@ -1,0 +1,17 @@
+### Experiment Data ###
+**/experiment-data/*
+
+### ChaosToolkit journal ###
+journal.json
+
+### Logs ###
+*.log
+
+### Python Cache ###
+**/__pycache__
+
+### VS Code ###
+.vscode/
+
+### MacOS ###
+.DS_Store
