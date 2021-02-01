@@ -1,0 +1,83 @@
+{
+    "version": "1.0.0",
+    "title": "K8S POD crashes must not cause downtime of chaos-demo service",
+    "description": "Simple ChaosToolkit experiment that uses the 'chaostoolkit-kubernetes' extension to terminate PODs and validate service availability.",
+    "tags": ["k8s"],
+
+    "configuration": {
+        "chaos_demo_base_url": {
+            "type": "env",
+            "key": "CHAOS_DEMO_BASE",
+            "default": "http://localhost:8080"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Service is UP and reports a healthy status",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "chaos-demo-service-healthy",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "url": "${chaos_demo_base_url}/actuator/health"
+                }
+            },
+            {
+                "type": "probe",
+                "name": "no-errors-in-traffic-report",
+                "tolerance": true,
+                "provider": {
+                    "type": "python",
+                    "module": "custom_probes",
+                    "func": "validate_traffic_report",
+                    "arguments": {
+                        "reportFile": "./experiment-data/vegeta_traffic_results.json"
+                    }
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+            "type": "action",
+            "name": "simulate-traffic",
+            "background": true,
+            "provider": {
+                "type": "process",
+                "path": "/usr/local/bin/vegeta",
+                "arguments": "attack -targets=vegeta_traffic.txt -workers=1 -rate=5/10s -timeout=2s -duration=90s -output=./experiment-data/vegeta_traffic_report.bin"
+            }
+        },
+        {
+            "type": "action",
+            "name": "terminate ONE random pod",
+            "pauses": {
+                "before": 10,
+                "after": 10
+            },
+            "provider": {
+                "type": "python",
+                "module": "chaosk8s.pod.actions",
+                "func": "terminate_pods",
+                "arguments": {
+                    "mode": "fixed",
+                    "qty": 1,
+                    "rand": "True"
+                }
+            }
+        },
+        {
+            "type": "action",
+            "name": "transform-traffic-report",
+            "pauses": {
+                "before": 10
+            },
+            "provider": {
+                "type": "process",
+                "path": "/usr/local/bin/vegeta",
+                "arguments": "encode --output ./experiment-data/vegeta_traffic_results.json --to json < ./experiment-data/vegeta_traffic_report.bin"
+            }
+        }
+    ]
+}
