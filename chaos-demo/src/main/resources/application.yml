@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: chaos-demo
+
+server:
+  servlet:
+    context-path: /chaos-demo
+
+management:
+  endpoint:
+    health:
+      show-details: always
