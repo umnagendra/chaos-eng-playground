@@ -19,4 +19,4 @@ Follow steps in [SETUP.md](SETUP.md) to setup the tools and environment required
 - [Chaos Engineering Principles](https://principlesofchaos.org/)
 - [Chaos Toolkit](https://chaostoolkit.org/)
 - [chaostoolkit-kubernetes](https://github.com/chaostoolkit/chaostoolkit-kubernetes)
-- [My notes about Chaos Toolkit]()
+- [My notes about Chaos Toolkit](./NOTES.md)
