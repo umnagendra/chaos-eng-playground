@@ -74,3 +74,13 @@ kubectl create -f deployment.yaml
 ```
 kubectl create -f service.yaml
 ```
+
+#### Scale up / down PODs in a deployment
+```
+kubectl scale --replicas=4 deployment.apps/<deployment name>
+```
+
+#### Expose a port from a service / replicaset via port-forwarding _(poor man's alternative to actually setting-up a load balancer)
+```
+kubectl port-forward replicaset.apps/<replicaset name> <SRC_PORT>:<DST_PORT>
+```
